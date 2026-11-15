@@ -24,7 +24,7 @@
     "prepare": "husky",
     "db:migrate": "node-pg-migrate up -m db/migrations",
     "db:rollback": "node-pg-migrate down -m db/migrations",
-    "db:create": "node-pg-migrate create -m db/migrations"
+    "db:create": "node-pg-migrate create -m db/migrations --migration-filename-format utc"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
