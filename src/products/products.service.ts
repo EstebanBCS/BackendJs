@@ -58,4 +58,14 @@ export class ProductsService {
     );
     return result.rows;
   }
+
+  // buscar por id
+  async findOne(id: string) {
+    const result = await this.pool.query(
+      'SELECT * FROM public.products WHERE id = $1',
+      [id],
+    );
+
+    return result.rows[0];
+  }
 }
