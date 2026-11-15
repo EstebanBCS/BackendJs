@@ -82,15 +82,34 @@ export class ProductsService {
 
     const offset = (pagina - 1) * limite;
 
-    const result = await this.pool.query(
-      `SELECT *
+    const [result, countResult] = await Promise.all([
+      this.pool.query(
+        `SELECT *
      FROM public.products
      WHERE activo = $1
      ORDER BY fecha_alta DESC
      LIMIT $2 OFFSET $3`,
-      [estado, limite, offset],
-    );
-    return result.rows;
+        [estado, limite, offset],
+      ),
+      this.pool.query(
+        `SELECT COUNT(*) FROM public.products
+      WHERE activo = $1`,
+        [estado],
+      ),
+    ]);
+
+    const total = Number(countResult.rows[0].count);
+    const totalPages = Math.ceil(total / limite);
+
+    return {
+      data: result.rows,
+      meta: {
+        total,
+        page: pagina,
+        limit: limite,
+        totalPages,
+      },
+    };
   }
 
   // buscar por id
