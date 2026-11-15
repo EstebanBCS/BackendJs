@@ -21,12 +21,16 @@
     "test:cov": "vitest run --coverage",
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:migrate": "node-pg-migrate up -m db/migrations",
+    "db:rollback": "node-pg-migrate down -m db/migrations",
+    "db:create": "node-pg-migrate create -m db/migrations"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
     "@nestjs/core": "^12.0.1",
     "@nestjs/platform-express": "^12.0.1",
+    "pg": "^8.23.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
@@ -40,6 +44,7 @@
     "@vitest/coverage-v8": "^4.1.2",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
+    "node-pg-migrate": "^9.0.0",
     "oxlint": "^1.58.0",
     "oxlint-tsgolint": "^7.0.2001",
     "prettier": "^3.10.1",
