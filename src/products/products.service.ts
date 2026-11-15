@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Pool } from 'pg';
 import { CreateProductDto } from './dto/create-product.dto.js';
+import { UpdateProductDto } from './dto/update-product.dto.js';
 
 @Injectable()
 export class ProductsService {
@@ -64,6 +65,39 @@ export class ProductsService {
     const result = await this.pool.query(
       'SELECT * FROM public.products WHERE id = $1',
       [id],
+    );
+
+    return result.rows[0];
+  }
+
+  // actualizar producto
+  async update(id: string, product: UpdateProductDto) {
+    const { nombre, descripcion, categoria, precio, stock, marca, imagen_url } =
+      product;
+
+    const result = await this.pool.query(
+      `UPDATE public.products
+     SET
+       nombre = COALESCE($1, nombre),
+       descripcion = COALESCE($2, descripcion),
+       categoria = COALESCE($3, categoria),
+       precio = COALESCE($4, precio),
+       stock = COALESCE($5, stock),
+       marca = COALESCE($6, marca),
+       imagen_url = COALESCE($7, imagen_url),
+       ultima_actualizacion = NOW()
+     WHERE id = $8
+     RETURNING *`,
+      [
+        nombre ?? null,
+        descripcion ?? null,
+        categoria ?? null,
+        precio ?? null,
+        stock ?? null,
+        marca ?? null,
+        imagen_url ?? null,
+        id,
+      ],
     );
 
     return result.rows[0];
