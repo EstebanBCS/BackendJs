@@ -7,6 +7,8 @@ import {
   Put,
   Delete,
   ParseUUIDPipe,
+  Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { ProductsService } from './products.service.js';
 import { CreateProductDto } from './dto/create-product.dto.js';
@@ -24,8 +26,14 @@ export class ProductsController {
 
   // endpoint get all productos
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  findAll(@Query('activo') activo?: string) {
+    if (activo != undefined && !['true', 'false'].includes(activo)) {
+      throw new BadRequestException(
+        'El parametro activo solo acepta true o false',
+      );
+    }
+
+    return this.productsService.findAll(activo);
   }
 
   // endpoint get producto por uuid

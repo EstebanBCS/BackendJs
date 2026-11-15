@@ -1,4 +1,10 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { Pool } from 'pg';
 import { CreateProductDto } from './dto/create-product.dto.js';
 import { UpdateProductDto } from './dto/update-product.dto.js';
@@ -14,49 +20,69 @@ export class ProductsService {
     const { nombre, descripcion, categoria, precio, stock, marca, imagen_url } =
       product;
 
-    // crear producto
-    const result = await this.pool.query(
-      `INSERT INTO public.products (
-      id,
-      nombre,
-      descripcion,
-      categoria,
-      precio,
-      stock,
-      marca,
-      fecha_alta,
-      ultima_actualizacion,
-      imagen_url
-    )
-    VALUES (
-      gen_random_uuid(),
-      $1, $2, $3, $4, $5, $6,
-      NOW(),
-      NOW(),
-      $7
-    )
-    RETURNING *`,
-      [
+    try {
+      const result = await this.pool.query(
+        `INSERT INTO public.products (
+        id,
         nombre,
-        descripcion ?? null,
-        categoria ?? null,
+        descripcion,
+        categoria,
         precio,
         stock,
-        marca ?? null,
-        imagen_url ?? null,
-      ],
-    );
+        marca,
+        fecha_alta,
+        ultima_actualizacion,
+        imagen_url
+      )
+      VALUES (
+        gen_random_uuid(),
+        $1, $2, $3, $4, $5, $6,
+        NOW(),
+        NOW(),
+        $7
+      )
+      RETURNING *`,
+        [
+          nombre,
+          descripcion ?? null,
+          categoria ?? null,
+          precio,
+          stock,
+          marca ?? null,
+          imagen_url ?? null,
+        ],
+      );
 
-    return result.rows[0];
+      return result.rows[0];
+    } catch (error) {
+      if (typeof error === 'object' && error !== null && 'code' in error) {
+        const code = error.code;
+
+        if (code === '23505') {
+          throw new ConflictException('El producto ya existe.');
+        }
+
+        if (['23514', '23502', '22P02'].includes(String(code))) {
+          throw new BadRequestException(
+            'Los datos del producto no son válidos.',
+          );
+        }
+      }
+
+      throw error;
+    }
   }
 
   // Listar
-  async findAll() {
+  async findAll(activo?: string) {
+    const estado = activo === 'false' ? false : true;
+
     const result = await this.pool.query(
       `SELECT *
      FROM public.products
-     WHERE activo = true
+     WHERE activo = $1
      ORDER BY fecha_alta DESC`,
+      [estado],
     );
     return result.rows;
   }
