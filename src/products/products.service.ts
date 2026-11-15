@@ -136,24 +136,31 @@ export class ProductsService {
     const result = await this.pool.query(
       `UPDATE public.products
      SET
-       nombre = COALESCE($1, nombre),
-       descripcion = COALESCE($2, descripcion),
-       categoria = COALESCE($3, categoria),
-       precio = COALESCE($4, precio),
-       stock = COALESCE($5, stock),
-       marca = COALESCE($6, marca),
-       imagen_url = COALESCE($7, imagen_url),
+       nombre = CASE WHEN $1 THEN $2 ELSE nombre END,
+       descripcion = CASE WHEN $3 THEN $4 ELSE descripcion END,
+       categoria = CASE WHEN $5 THEN $6 ELSE categoria END,
+       precio = CASE WHEN $7 THEN $8 ELSE precio END,
+       stock = CASE WHEN $9 THEN $10 ELSE stock END,
+       marca = CASE WHEN $11 THEN $12 ELSE marca END,
+       imagen_url = CASE WHEN $13 THEN $14 ELSE imagen_url END,
        ultima_actualizacion = NOW()
-     WHERE id = $8
-      AND activo = true
+     WHERE id = $15
+       AND activo = true
      RETURNING *`,
       [
+        nombre !== undefined,
         nombre ?? null,
+        descripcion !== undefined,
         descripcion ?? null,
+        categoria !== undefined,
         categoria ?? null,
+        precio !== undefined,
         precio ?? null,
+        stock !== undefined,
         stock ?? null,
+        marca !== undefined,
         marca ?? null,
+        imagen_url !== undefined,
         imagen_url ?? null,
         id,
       ],
