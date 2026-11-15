@@ -26,14 +26,18 @@ export class ProductsController {
 
   // endpoint get all productos
   @Get()
-  findAll(@Query('activo') activo?: string) {
+  findAll(
+    @Query('activo') activo?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
     if (activo != undefined && !['true', 'false'].includes(activo)) {
       throw new BadRequestException(
         'El parametro activo solo acepta true o false',
       );
     }
 
-    return this.productsService.findAll(activo);
+    return this.productsService.findAll(activo, page, limit);
   }
 
   // endpoint get producto por uuid

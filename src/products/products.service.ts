@@ -74,15 +74,21 @@ export class ProductsService {
   }
 
   // Listar
-  async findAll(activo?: string) {
+  async findAll(activo?: string, page?: string, limit?: string) {
     const estado = activo === 'false' ? false : true;
+
+    const pagina = Math.max(1, Number(page) || 1);
+    const limite = Math.min(100, Math.max(1, Number(limit) || 10));
+
+    const offset = (pagina - 1) * limite;
 
     const result = await this.pool.query(
       `SELECT *
      FROM public.products
      WHERE activo = $1
-     ORDER BY fecha_alta DESC`,
-      [estado],
+     ORDER BY fecha_alta DESC
+     LIMIT $2 OFFSET $3`,
+      [estado, limite, offset],
     );
     return result.rows;
   }
