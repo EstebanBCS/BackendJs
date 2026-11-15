@@ -8,11 +8,11 @@ import {
   Delete,
   ParseUUIDPipe,
   Query,
-  BadRequestException,
 } from '@nestjs/common';
 import { ProductsService } from './products.service.js';
 import { CreateProductDto } from './dto/create-product.dto.js';
 import { UpdateProductDto } from './dto/update-product.dto.js';
+import { FindProductsQueryDto } from './dto/find-products-query.dto.js';
 
 @Controller('products')
 export class ProductsController {
@@ -26,18 +26,12 @@ export class ProductsController {
 
   // endpoint get all productos
   @Get()
-  findAll(
-    @Query('activo') activo?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-  ) {
-    if (activo != undefined && !['true', 'false'].includes(activo)) {
-      throw new BadRequestException(
-        'El parametro activo solo acepta true o false',
-      );
-    }
-
-    return this.productsService.findAll(activo, page, limit);
+  findAll(@Query() query: FindProductsQueryDto) {
+    return this.productsService.findAll(
+      query.activo,
+      query.page?.toString(),
+      query.limit?.toString(),
+    );
   }
 
   // endpoint get producto por uuid
