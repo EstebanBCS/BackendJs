@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Pool } from 'pg';
 import { CreateProductDto } from './dto/create-product.dto.js';
 import { UpdateProductDto } from './dto/update-product.dto.js';
@@ -55,6 +55,7 @@ export class ProductsService {
     const result = await this.pool.query(
       `SELECT *
      FROM public.products
+     WHERE activo = true
      ORDER BY fecha_alta DESC`,
     );
     return result.rows;
@@ -63,9 +64,15 @@ export class ProductsService {
   // buscar por id
   async findOne(id: string) {
     const result = await this.pool.query(
-      'SELECT * FROM public.products WHERE id = $1',
+      'SELECT * FROM public.products WHERE id = $1 AND activo = true',
       [id],
     );
+
+    if (result.rows.length === 0) {
+      throw new NotFoundException(
+        `No se encontró un producto activo con el ID: ${id}`,
+      );
+    }
 
     return result.rows[0];
   }
