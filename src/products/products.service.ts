@@ -102,4 +102,19 @@ export class ProductsService {
 
     return result.rows[0];
   }
+
+  // borrar producto (desactivarlo)
+  async remove(id: string) {
+    const result = await this.pool.query(
+      `UPDATE public.products
+     SET activo = false,
+         ultima_actualizacion = NOW()
+     WHERE id = $1
+       AND activo = true
+     RETURNING *`,
+      [id],
+    );
+
+    return result.rows[0];
+  }
 }
