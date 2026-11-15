@@ -94,6 +94,7 @@ export class ProductsService {
        imagen_url = COALESCE($7, imagen_url),
        ultima_actualizacion = NOW()
      WHERE id = $8
+      AND activo = true
      RETURNING *`,
       [
         nombre ?? null,
@@ -106,6 +107,12 @@ export class ProductsService {
         id,
       ],
     );
+
+    if (result.rows.length === 0) {
+      throw new NotFoundException(
+        `No se encontró un producto activo con el ID: ${id}`,
+      );
+    }
 
     return result.rows[0];
   }
@@ -121,6 +128,12 @@ export class ProductsService {
      RETURNING *`,
       [id],
     );
+
+    if (result.rows.length === 0) {
+      throw new NotFoundException(
+        `No se encontró un producto activo con el ID: ${id}`,
+      );
+    }
 
     return result.rows[0];
   }
