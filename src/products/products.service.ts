@@ -13,6 +13,7 @@ export class ProductsService {
     const { nombre, descripcion, categoria, precio, stock, marca, imagen_url } =
       product;
 
+    // crear producto
     const result = await this.pool.query(
       `INSERT INTO public.products (
       id,
@@ -46,5 +47,15 @@ export class ProductsService {
     );
 
     return result.rows[0];
+  }
+
+  // Listar
+  async findAll() {
+    const result = await this.pool.query(
+      `SELECT *
+     FROM public.products
+     ORDER BY fecha_alta DESC`,
+    );
+    return result.rows;
   }
 }
