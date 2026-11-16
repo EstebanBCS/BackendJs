@@ -1,132 +1,411 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Backend - Sistema de gestión de productos
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST desarrollada con **NestJS**, **TypeScript** y **PostgreSQL**, orientada a la gestión de productos mediante operaciones CRUD, validaciones de datos, filtros y paginación.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tecnologías utilizadas
 
-## Description
+- **NestJS 12:** framework para el desarrollo del backend.
+- **TypeScript 6:** lenguaje de programación.
+- **PostgreSQL:** sistema gestor de base de datos.
+- **node-postgres (pg):** conexión y ejecución de consultas SQL.
+- **class-validator:** validación de datos de entrada.
+- **class-transformer:** transformación de parámetros recibidos.
+- **node-pg-migrate:** administración de migraciones de la base de datos.
+- **Vitest y Supertest:** herramientas para pruebas.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Estructura del proyecto
 
-## Project setup
-
-```bash
-$ npm install
+```text
+backend/
+├── db/
+│   ├── seeds/
+│   │   └── products.sql
+│   ├── migrations/
+│   │   └── migracion
+│   │   └── migracion
+│   │   └── migracion
+│   │   └── migracion
+│   ├── respaldo.sql
+│   └── respaldo2.sql
+├── src/
+│   ├── database/
+│   │   └── database.module.ts
+│   ├── products/
+│   │   ├── dto/
+│   │   │   ├── create-product.dto.ts
+│   │   │   ├── update-product.dto.ts
+│   │   │   └── find-products-query.dto.ts
+│   │   ├── products.controller.ts
+│   │   ├── products.module.ts
+│   │   └── products.service.ts
+│   ├── app.controller.ts
+│   ├── app.controller.spec.ts
+│   ├── app.module.ts
+│   ├── app.service.ts
+│   └── main.ts
+├── test/
+├── .env.example
+├── package.json
+└── README.md
 ```
 
-## Compile and run the project
+## Requisitos previos
+
+- Node.js y npm.
+- PostgreSQL.
+- Una base de datos PostgreSQL creada para el proyecto.
+
+## Instalación
+
+1. Clonar el repositorio:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone https://github.com/EstebanBCS/BackendJs.git
 ```
 
-## Run tests
+2. Entrar al directorio del proyecto:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+cd backend
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+3. Instalar las dependencias:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm install
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Configuración de variables de entorno
 
-## Observability
+Crear un archivo `.env` en la raíz del proyecto, tomando como referencia `.env.example`.
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
+Configurar la conexión a PostgreSQL:
 
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
+```env
+DATABASE_URL=postgres://TU_USUARIO:TU_CONTRASEÑA@localhost:5432/TU_BASE_DE_DATOS
+```
 
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
+Sustituir los valores de ejemplo por las credenciales y el nombre de la base de datos correspondientes.
 
-To add it to this project, run this and approve the code it prints at [observe.nestjs.com/link](https://observe.nestjs.com/link) - signing up for free if you have no account:
+## Base de datos y migraciones
+
+El proyecto utiliza PostgreSQL y consultas SQL directas mediante `pg`, sin utilizar un ORM.
+
+### Crear la base de datos
+
+Antes de ejecutar el backend, crea una base de datos PostgreSQL para el proyecto.
+
+Por ejemplo, puedes utilizar el nombre `productos_db`.
+
+### Ejecutar las migraciones
+
+Las migraciones se encuentran en `db/migrations/` y permiten crear la estructura de la base de datos automáticamente, sin necesidad de crear las tablas manualmente.
+
+Para ejecutar todas las migraciones pendientes:
 
 ```bash
-$ npx @nestjs/observe link
+npm run db:migrate
 ```
 
-It installs `@nestjs/observe`, wires it into `AppModule` and `main.ts`, and writes the app key and secret into `.env`, which every `nest start` script (`start`, `start:dev`, `start:debug`) then loads. In production, set `OBSERVE_APP_KEY` and `OBSERVE_APP_SECRET` in the environment instead.
+Este comando crea la tabla `products` y aplica las modificaciones necesarias, incluyendo:
 
-Or do it by hand:
+- Creación de la tabla y sus columnas iniciales.
+- Incorporación de la URL de imagen y el estado del producto.
+- Restricciones para evitar precios y existencias negativas.
+- Configuración del campo `ultima_actualizacion` como `TIMESTAMPTZ`.
+
+Para revertir la última migración:
 
 ```bash
-$ npm install @nestjs/observe
+npm run db:rollback
 ```
 
-Then follow the [setup guide](https://docs.nestjs.com/observability/sdk) - it takes a single import and an app key.
+Para generar una nueva migración:
 
-The free plan needs no payment details and covers 300,000 events a month. You can also browse the [live demo](https://www.observe-demo.nestjs.com/dashboard) first - the whole dashboard over a busy service's data, with nothing to install.
+```bash
+npm run db:create -- nombre_migracion
+```
 
-## Resources
+**Importante:** las migraciones deben ejecutarse antes de cargar los datos de ejemplo.
 
-Check out a few resources that may come in handy when working with NestJS:
+## Datos de ejemplo (Seed)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observe](https://observe.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+El proyecto incluye un archivo SQL con 12 productos de ejemplo para facilitar las pruebas de la aplicación.
 
-## Support
+**Ubicación:**
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```text
+db/
+└── seeds/
+    └── products.sql
+```
 
-## Stay in touch
+### Cargar los datos
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Después de crear la base de datos y ejecutar las migraciones correspondientes para crear la tabla `products`, ejecuta el archivo `products.sql` desde PostgreSQL o pgAdmin.
 
-## License
+También puedes ejecutarlo desde la terminal:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```bash
+psql -U postgres -d nombre_base_datos -f db/seeds/products.sql
+```
+
+Reemplaza `nombre_base_datos` por el nombre de tu base de datos.
+
+El archivo contiene 12 productos de ejemplo y utiliza `ON CONFLICT (id) DO NOTHING` para evitar insertar nuevamente registros cuyos identificadores ya existan.
+
+**Nota:** Los datos incluidos son únicamente para pruebas y demostración.
+
+Si el comando `psql` no está disponible en la terminal de Window, puedes abrir `products.sql` desde pgAdmin, seleccionar la base de datos correspondiente en Query Tool y ejecutar su contenido.
+
+## Ejecución del proyecto
+
+Iniciar el servidor en modo desarrollo:
+
+```bash
+npm run start:dev
+```
+
+Por defecto, el servidor utiliza el puerto `3000`. También puede configurarse mediante la variable de entorno `PORT`.
+
+La API estará disponible en:
+
+```text
+http://localhost:3000
+```
+
+## Endpoints
+
+### Estado de la aplicación
+
+| Método | Endpoint  | Descripción                                                    |
+| ------ | --------- | -------------------------------------------------------------- |
+| GET    | `/`       | Ruta principal de la aplicación.                               |
+| GET    | `/health` | Comprueba el estado del servidor y la conexión con PostgreSQL. |
+
+### Productos
+
+| Método | Endpoint                 | Descripción                                     |
+| ------ | ------------------------ | ----------------------------------------------- |
+| POST   | `/products`              | Registrar un producto.                          |
+| GET    | `/products`              | Consultar productos con filtros y paginación.   |
+| GET    | `/products/:id`          | Consultar un producto por UUID.                 |
+| PUT    | `/products/:id`          | Actualizar un producto.                         |
+| DELETE | `/products/:id`          | Desactivar un producto mediante borrado lógico. |
+| PATCH  | `/products/:id/activate` | Reactivar un producto previamente desactivado.  |
+
+### Registrar un producto
+
+**POST** `/products`
+
+Ejemplo del cuerpo de la petición:
+
+```json
+{
+  "nombre": "Mouse inalámbrico",
+  "descripcion": "Mouse de prueba",
+  "categoria": "Periféricos",
+  "precio": 450,
+  "stock": 10,
+  "marca": "Logitech",
+  "imagen_url": "https://example.com/mouse.jpg"
+}
+```
+
+El identificador se genera automáticamente al registrar el producto.
+
+### Consultar productos
+
+**GET** `/products`
+
+Permite filtrar los productos por estado y consultar los resultados mediante paginación.
+
+Parámetros disponibles:
+
+| Parámetro | Tipo     | Descripción                           | Valor predeterminado |
+| --------- | -------- | ------------------------------------- | -------------------- |
+| `activo`  | Booleano | Filtra productos activos o inactivos. | `true`               |
+| `page`    | Entero   | Número de página.                     | `1`                  |
+| `limit`   | Entero   | Cantidad de registros por página.     | `10`                 |
+
+Ejemplos:
+
+```http
+GET /products
+GET /products?activo=true
+GET /products?activo=false
+GET /products?page=1&limit=10
+GET /products?activo=true&page=2&limit=5
+```
+
+La respuesta incluye los registros y los metadatos de paginación:
+
+```json
+{
+  "data": [],
+  "meta": {
+    "total": 0,
+    "page": 1,
+    "limit": 10,
+    "totalPages": 0
+  }
+}
+```
+
+El parámetro `limit` admite valores entre 1 y 100.
+
+### Consultar un producto
+
+**GET** `/products/:id`
+
+Recibe el UUID del producto como parámetro de ruta.
+
+Ejemplo:
+
+```http
+GET /products/1c1c4768-2bf1-4067-b1aa-d70bb0d6b8d9
+```
+
+### Actualizar un producto
+
+**PUT** `/products/:id`
+
+Permite actualizar uno o varios campos del producto.
+
+Ejemplo:
+
+```json
+{
+  "nombre": "Mouse inalámbrico Logitech",
+  "precio": 500,
+  "stock": 15
+}
+```
+
+Los campos omitidos conservan su valor actual.
+
+Los campos opcionales `descripcion`, `categoria`, `marca` e `imagen_url` pueden recibir `null` para limpiar su contenido.
+
+### Eliminar un producto
+
+**DELETE** `/products/:id`
+
+El sistema utiliza borrado lógico (_soft delete_). Esto significa que el registro no se elimina físicamente de la base de datos, sino que su campo `activo` cambia a `false`.
+
+También se actualiza el campo `ultima_actualizacion`.
+
+### Reactivar un producto
+
+**PATCH** `/products/:id/activate`
+
+Permite reactivar un producto que fue desactivado previamente mediante el borrado lógico.
+
+No requiere cuerpo (`body`). Únicamente necesita el UUID del producto en la URL.
+
+**Ejemplo de respuesta (200 OK):**
+
+```json
+{
+  "id": "aedf1c61-9f0b-41f2-b1f6-2d7e16ef83da",
+  "nombre": "Silla Ergonomica de Oficina",
+  "descripcion": "Silla ergonomica de alta calidad para oficina",
+  "categoria": "Sillas",
+  "precio": "2300",
+  "stock": 5,
+  "marca": "Generica",
+  "fecha_alta": "2026-11-16T04:55:26.650Z",
+  "ultima_actualizacion": "2026-11-16T19:24:46.114Z",
+  "imagen_url": "https://images.unsplash.com/photo-1579487785973-74d2ca7abdd5?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
+  "activo": true
+}
+```
+
+Si el producto no existe o ya se encuentra activo, devuelve un error `404 Not Found`.
+
+## Validaciones y manejo de errores
+
+La aplicación utiliza un `ValidationPipe` global con las siguientes opciones:
+
+- `whitelist`: elimina propiedades que no cuentan con validaciones.
+- `forbidNonWhitelisted`: rechaza propiedades no permitidas.
+- `transform`: transforma los datos recibidos para facilitar su validación.
+
+Entre las validaciones implementadas se encuentran:
+
+- Nombre obligatorio, de máximo 50 caracteres.
+- Descripción de máximo 200 caracteres.
+- Categoría y marca de máximo 50 caracteres.
+- Precio numérico, con máximo dos decimales y sin valores negativos.
+- Stock entero y sin valores negativos.
+- URL válida para la imagen.
+- UUID válido para los identificadores.
+- Parámetros de consulta con valores permitidos y límites establecidos.
+
+Principales códigos HTTP utilizados:
+
+| Código | Descripción                               |
+| ------ | ----------------------------------------- |
+| 200    | Operación realizada correctamente.        |
+| 201    | Producto creado correctamente.            |
+| 400    | Datos inválidos o parámetros incorrectos. |
+| 404    | Producto no encontrado o inactivo.        |
+| 409    | Conflicto al registrar un producto.       |
+
+## Manejo de conexiones
+
+La conexión a PostgreSQL se administra mediante un `Pool` de `pg`, registrado como proveedor en `DatabaseModule`.
+
+La aplicación también implementa el cierre de conexiones al apagarse mediante `enableShutdownHooks()` y el método `pool.end()`.
+
+## Pruebas
+
+El proyecto utiliza **Vitest** para ejecutar pruebas unitarias. Actualmente incluye una prueba básica del controlador principal, basada en la configuración inicial de NestJS.
+
+Ejecutar las pruebas:
+
+```bash
+npm run test
+```
+
+Ejecutar las pruebas en modo observación:
+
+```bash
+npm run test:watch
+```
+
+Ejecutar las pruebas con cobertura:
+
+```bash
+npm run test:cov
+```
+
+Ejecutar las pruebas end-to-end:
+
+```bash
+npm run test:e2e
+```
+
+**Nota:** Los comandos de cobertura y pruebas end-to-end están disponibles, pero no se ha implementado una suite específica para cubrir los endpoints de productos.
+
+## Control de calidad y pre-commit
+
+El proyecto utiliza **Husky** y **lint-staged** para ejecutar verificaciones automáticas antes de cada commit.
+
+El hook `pre-commit` ejecuta `npx lint-staged`, que aplica las siguientes tareas a los archivos preparados para el commit:
+
+- **Archivos TypeScript (`.ts`):** análisis estático con Oxlint y formato con Prettier.
+- **Archivos JavaScript, JSON, Markdown y YAML:** formato con Prettier.
+
+Estas verificaciones ayudan a mantener la consistencia y calidad del código antes de registrar los cambios en Git.
+
+## Otros comandos disponibles
+
+| Comando                | Descripción                              |
+| ---------------------- | ---------------------------------------- |
+| `npm run build`        | Compila el proyecto.                     |
+| `npm run start`        | Inicia la aplicación.                    |
+| `npm run start:dev`    | Inicia en modo desarrollo.               |
+| `npm run start:prod`   | Ejecuta la versión compilada.            |
+| `npm run lint`         | Ejecuta el análisis estático del código. |
+| `npm run format`       | Formatea los archivos TypeScript.        |
+| `npm run format:check` | Comprueba el formato del código.         |
