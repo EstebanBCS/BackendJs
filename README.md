@@ -18,6 +18,8 @@ API REST desarrollada con **NestJS**, **TypeScript** y **PostgreSQL**, orientada
 ```text
 backend/
 ├── db/
+│   ├── seeds/
+│   │   └── products.sql
 │   ├── migrations/
 │   │   └── migracion
 │   │   └── migracion
@@ -109,6 +111,34 @@ Para generar una nueva migración:
 npm run db:create -- nombre_migracion
 ```
 
+## Datos de ejemplo (Seed)
+
+El proyecto incluye un archivo SQL con 12 productos de ejemplo para facilitar las pruebas de la aplicación.
+
+**Ubicación:**
+
+```text
+db/
+└── seeds/
+    └── products.sql
+```
+
+### Cargar los datos
+
+Después de crear la base de datos y ejecutar las migraciones correspondientes para crear la tabla `products`, ejecuta el archivo `products.sql` desde PostgreSQL o pgAdmin.
+
+También puedes ejecutarlo desde la terminal:
+
+```bash
+psql -U postgres -d nombre_base_datos -f db/seeds/products.sql
+```
+
+Reemplaza `nombre_base_datos` por el nombre de tu base de datos.
+
+El archivo contiene 12 productos de ejemplo y utiliza `ON CONFLICT (id) DO NOTHING` para evitar insertar nuevamente registros cuyos identificadores ya existan.
+
+**Nota:** Los datos incluidos son únicamente para pruebas y demostración.
+
 ## Ejecución del proyecto
 
 Iniciar el servidor en modo desarrollo:
@@ -136,13 +166,14 @@ http://localhost:3000
 
 ### Productos
 
-| Método | Endpoint        | Descripción                                     |
-| ------ | --------------- | ----------------------------------------------- |
-| POST   | `/products`     | Registrar un producto.                          |
-| GET    | `/products`     | Consultar productos con filtros y paginación.   |
-| GET    | `/products/:id` | Consultar un producto por UUID.                 |
-| PUT    | `/products/:id` | Actualizar un producto.                         |
-| DELETE | `/products/:id` | Desactivar un producto mediante borrado lógico. |
+| Método | Endpoint                 | Descripción                                     |
+| ------ | ------------------------ | ----------------------------------------------- |
+| POST   | `/products`              | Registrar un producto.                          |
+| GET    | `/products`              | Consultar productos con filtros y paginación.   |
+| GET    | `/products/:id`          | Consultar un producto por UUID.                 |
+| PUT    | `/products/:id`          | Actualizar un producto.                         |
+| DELETE | `/products/:id`          | Desactivar un producto mediante borrado lógico. |
+| PATCH  | `/products/:id/activate` | Reactivar un producto previamente desactivado.  |
 
 ### Registrar un producto
 
@@ -243,6 +274,34 @@ Los campos opcionales `descripcion`, `categoria`, `marca` e `imagen_url` pueden 
 El sistema utiliza borrado lógico (_soft delete_). Esto significa que el registro no se elimina físicamente de la base de datos, sino que su campo `activo` cambia a `false`.
 
 También se actualiza el campo `ultima_actualizacion`.
+
+### Reactivar un producto
+
+**PATCH** `/products/:id/activate`
+
+Permite reactivar un producto que fue desactivado previamente mediante el borrado lógico.
+
+No requiere cuerpo (`body`). Únicamente necesita el UUID del producto en la URL.
+
+**Ejemplo de respuesta (200 OK):**
+
+```json
+{
+  "id": "aedf1c61-9f0b-41f2-b1f6-2d7e16ef83da",
+  "nombre": "Silla Ergonomica de Oficina",
+  "descripcion": "Silla ergonomica de alta calidad para oficina",
+  "categoria": "Sillas",
+  "precio": "2300",
+  "stock": 5,
+  "marca": "Generica",
+  "fecha_alta": "2026-11-16T04:55:26.650Z",
+  "ultima_actualizacion": "2026-11-16T19:24:46.114Z",
+  "imagen_url": "https://images.unsplash.com/photo-1579487785973-74d2ca7abdd5?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
+  "activo": true
+}
+```
+
+Si el producto no existe o ya se encuentra activo, devuelve un error `404 Not Found`.
 
 ## Validaciones y manejo de errores
 
