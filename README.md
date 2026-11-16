@@ -91,13 +91,28 @@ Sustituir los valores de ejemplo por las credenciales y el nombre de la base de 
 
 El proyecto utiliza PostgreSQL y consultas SQL directas mediante `pg`, sin utilizar un ORM.
 
-Las migraciones se encuentran en `db/migrations/`.
+### Crear la base de datos
 
-Para ejecutar las migraciones pendientes:
+Antes de ejecutar el backend, crea una base de datos PostgreSQL para el proyecto.
+
+Por ejemplo, puedes utilizar el nombre `productos_db`.
+
+### Ejecutar las migraciones
+
+Las migraciones se encuentran en `db/migrations/` y permiten crear la estructura de la base de datos automáticamente, sin necesidad de crear las tablas manualmente.
+
+Para ejecutar todas las migraciones pendientes:
 
 ```bash
 npm run db:migrate
 ```
+
+Este comando crea la tabla `products` y aplica las modificaciones necesarias, incluyendo:
+
+- Creación de la tabla y sus columnas iniciales.
+- Incorporación de la URL de imagen y el estado del producto.
+- Restricciones para evitar precios y existencias negativas.
+- Configuración del campo `ultima_actualizacion` como `TIMESTAMPTZ`.
 
 Para revertir la última migración:
 
@@ -110,6 +125,8 @@ Para generar una nueva migración:
 ```bash
 npm run db:create -- nombre_migracion
 ```
+
+**Importante:** las migraciones deben ejecutarse antes de cargar los datos de ejemplo.
 
 ## Datos de ejemplo (Seed)
 
@@ -138,6 +155,8 @@ Reemplaza `nombre_base_datos` por el nombre de tu base de datos.
 El archivo contiene 12 productos de ejemplo y utiliza `ON CONFLICT (id) DO NOTHING` para evitar insertar nuevamente registros cuyos identificadores ya existan.
 
 **Nota:** Los datos incluidos son únicamente para pruebas y demostración.
+
+Si el comando `psql` no está disponible en la terminal de Window, puedes abrir `products.sql` desde pgAdmin, seleccionar la base de datos correspondiente en Query Tool y ejecutar su contenido.
 
 ## Ejecución del proyecto
 

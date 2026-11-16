@@ -1,16 +1,13 @@
-/**
- * @type {import('node-pg-migrate').MigrationBuilder}
- */
-
 export const up = (pgm) => {
-  pgm.addColumn('products', {
-    imagen_url: {
-      type: 'text',
-      notNull: false,
-    },
-  });
+  pgm.sql(`
+    ALTER TABLE public.products
+    ADD COLUMN IF NOT EXISTS imagen_url TEXT;
+  `);
 };
 
 export const down = (pgm) => {
-  pgm.dropColumn('products', 'imagen_url');
+  pgm.sql(`
+    ALTER TABLE public.products
+    DROP COLUMN IF EXISTS imagen_url;
+  `);
 };
