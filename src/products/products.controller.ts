@@ -1,0 +1,63 @@
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Put,
+  Delete,
+  ParseUUIDPipe,
+  Query,
+  Patch,
+} from '@nestjs/common';
+import { ProductsService } from './products.service.js';
+import { CreateProductDto } from './dto/create-product.dto.js';
+import { UpdateProductDto } from './dto/update-product.dto.js';
+import { FindProductsQueryDto } from './dto/find-products-query.dto.js';
+import path from 'path';
+
+@Controller('products')
+export class ProductsController {
+  constructor(private readonly productsService: ProductsService) {}
+
+  // endpoint post producto
+  @Post()
+  create(@Body() product: CreateProductDto) {
+    return this.productsService.create(product);
+  }
+
+  // endpoint get all productos
+  @Get()
+  findAll(@Query() query: FindProductsQueryDto) {
+    return this.productsService.findAll(
+      query.activo,
+      query.page?.toString(),
+      query.limit?.toString(),
+    );
+  }
+
+  // endpoint get producto por uuid
+  @Get(':id')
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.productsService.findOne(id);
+  }
+
+  // endpoint de actualizar producto
+  @Put(':id')
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() product: UpdateProductDto,
+  ) {
+    return this.productsService.update(id, product);
+  }
+
+  @Delete(':id')
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.productsService.remove(id);
+  }
+
+  @Patch(':id/activate')
+  activate(@Param('id') id: string) {
+    return this.productsService.activate(id);
+  }
+}

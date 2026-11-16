@@ -8,7 +8,16 @@ describe('AppController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [
+        AppService,
+        {
+          provide: 'PG_POOL',
+          useValue: {
+            query: vi.fn().mockResolvedValue({ rows: [{ '?column?': 1 }] }),
+            end: vi.fn().mockResolvedValue(undefined),
+          },
+        },
+      ],
     }).compile();
 
     appController = app.get<AppController>(AppController);
@@ -16,7 +25,7 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+      expect(appController.getHello()).toBe('Backend Funcionando');
     });
   });
 });
