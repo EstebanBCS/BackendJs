@@ -195,4 +195,25 @@ export class ProductsService {
 
     return result.rows[0];
   }
+
+  // reactivar producto
+  async activate(id: string) {
+    const result = await this.pool.query(
+      `UPDATE public.products
+     SET activo = true,
+         ultima_actualizacion = NOW()
+     WHERE id = $1
+       AND activo = false
+     RETURNING *`,
+      [id],
+    );
+
+    if (result.rows.length === 0) {
+      throw new NotFoundException(
+        `No se encontró un producto inactivo con el ID: ${id}`,
+      );
+    }
+
+    return result.rows[0];
+  }
 }
